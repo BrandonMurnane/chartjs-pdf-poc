@@ -98,7 +98,7 @@ pako@^0.2.5:
   resolved "https://registry.npmjs.org/pako/-/pako-0.2.9.tgz"
   integrity sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==
 
-pdfkit@^0.16.0:
+pdfkit@^0.16.0, pdfkit@>=0.8.1:
   version "0.16.0"
   resolved "https://registry.npmjs.org/pdfkit/-/pdfkit-0.16.0.tgz"
   integrity sha512-oXMxkIqXH4uTAtohWdYA41i/f6i2ReB78uhgizN8H4hJEpgR3/Xjy3iu2InNAuwCIabN3PVs8P1D6G4+W2NH0A==
@@ -126,6 +126,13 @@ restructure@^3.0.0:
   version "3.0.2"
   resolved "https://registry.npmjs.org/restructure/-/restructure-3.0.2.tgz"
   integrity sha512-gSfoiOEA0VPE6Tukkrr7I0RBdE0s7H1eFCDBk05l1KIQT1UIKNc5JZy6jdyW6eYH3aR3g5b3PuL77rq0hvwtAw==
+
+svg-to-pdfkit@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.npmjs.org/svg-to-pdfkit/-/svg-to-pdfkit-0.1.8.tgz"
+  integrity sha512-QItiGZBy5TstGy+q8mjQTMGRlDDOARXLxH+sgVm1n/LYeo0zFcQlcCh8m4zi8QxctrxB9Kue/lStc/RD5iLadQ==
+  dependencies:
+    pdfkit ">=0.8.1"
 
 tiny-inflate@^1.0.0, tiny-inflate@^1.0.3:
   version "1.0.3"

@@ -1,16 +1,14 @@
 const QuickChart = require('quickchart-js');
 const PDFDocument = require('pdfkit');
+const svgToPdf = require('svg-to-pdfkit');
 const fs = require('fs');
 
 const outputFilename = process.argv[2] || 'chart.pdf';
 
 (async () => {
     try {
-        const displayChartWidth = 800;
-        const displayChartHeight = 600;
-        const scaleFactor = 2;
-        const bufferWidth = displayChartWidth * scaleFactor;
-        const bufferHeight = displayChartHeight * scaleFactor;
+        const desiredWidth = 800;
+        const defaultHeight = 600;
 
         const qc = new QuickChart();
         qc.setConfig({
@@ -38,7 +36,7 @@ const outputFilename = process.argv[2] || 'chart.pdf';
                 scales: {
                     xAxes: [{
                         stacked: true,
-                        ticks: { beginAtZero: true , fontSize: 18, fontStyle: "bold", },
+                        ticks: {beginAtZero: true, fontSize: 18, fontStyle: "bold",},
                         scaleLabel: {
                             display: true,
                             labelString: 'Amount of People',
@@ -50,7 +48,7 @@ const outputFilename = process.argv[2] || 'chart.pdf';
                         stacked: true,
                         barPercentage: 0.5,
                         categoryPercentage: 1.0,
-                        ticks: { fontSize: 18, fontStyle: "bold", },
+                        ticks: {fontSize: 18, fontStyle: "bold",},
                         scaleLabel: {
                             display: true,
                             labelString: 'Food Item',
@@ -61,27 +59,23 @@ const outputFilename = process.argv[2] || 'chart.pdf';
                 }
             }
         });
-        qc.setWidth(bufferWidth);
-        qc.setHeight(bufferHeight);
-        qc.setDevicePixelRatio(scaleFactor);
+        qc.setWidth(desiredWidth);
+        qc.setHeight(defaultHeight);
+        qc.setFormat('svg');
         qc.setBackgroundColor('transparent');
-        const imageBuffer = await qc.toBinary();
+
+        const svgBuffer = await qc.toBinary();
+        const svgString = svgBuffer.toString();
+        fs.writeFileSync('chart.svg', svgString);
+        console.log('SVG file saved as chart.svg');
 
         const doc = new PDFDocument({ autoFirstPage: false });
         const pdfStream = fs.createWriteStream(outputFilename);
         doc.pipe(pdfStream);
-        doc.addPage({ size: [displayChartWidth, displayChartHeight] });
-        doc.image(imageBuffer, 0, 0, { width: displayChartWidth, height: displayChartHeight });
+        doc.addPage({ size: [desiredWidth, defaultHeight] });
+        svgToPdf(doc, svgString, 0, 0, { width: desiredWidth, height: defaultHeight });
         doc.lineWidth(2);
-        doc.rect(0, 0, displayChartWidth, displayChartHeight).stroke();
-        doc.save();
-        doc.opacity(0.3);
-        doc.fontSize(96).fillColor('gray');
-        const centerX = displayChartWidth / 2;
-        const centerY = displayChartHeight / 2;
-        doc.rotate(45, { origin: [centerX, centerY] });
-        doc.text('Confidential', 0, centerY - 48, { width: displayChartWidth, align: 'center' });
-        doc.restore();
+        doc.rect(0, 0, desiredWidth, defaultHeight).stroke();
         doc.end();
 
         pdfStream.on('finish', () => {
